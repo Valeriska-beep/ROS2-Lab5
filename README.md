@@ -336,3 +336,66 @@ ros2 topic echo /cmd_vel
 ```
 
 Вузол playback_node успішно зчитав команди з CSV та опублікував їх у /cmd_vel із точним дотриманням вихідних часових пауз, після чого відправив фінальну команду зупинки. Статуси руху коректно відтворювалися у вікні robot_gui.
+
+
+
+# Запуск програми
+Збірка робочого простору
+
+```bash
+cd ~/ros2_ws
+colcon build --packages-select motion_playback_pkg
+source install/setup.bash
+# Перевіряємо, що обидва виконувані файли зареєстровані
+ros2 pkg executables motion_playback_pkg
+```
+
+
+Термінал 1: Вузол обробки руху (motion_node)
+Цей вузол виступає виконавчим модулем: приймає команди швидкості й виводить поточний стан. 
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run motion_control motion_node
+```
+
+Термінал 2: Графічний інтерфейс
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run robot_gui gui_node
+```
+
+Термінал 3: Вузол запису (record_node)
+Він підключається до шини /cmd_vel і очікує дій оператора.   
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run motion_playback_pkg record_node
+```
+
+Термінал 4: Перевірка створеного CSV
+
+```bash
+cat ~/ros2_ws/scenario.csv
+```
+
+Згенерований сценарій у форматі CSV: колонка часу від старту, лінійна швидкість linear_x та кутова angular_z. 
+Останнім рядком записана швидкість 0.0, 0.0 для безпечної зупинки.  
+
+
+Терміналі 4: Автоматичне відтворення сценарію (Playback)
+
+```bash
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash
+ros2 run motion_playback_pkg playback_node
+```
+
+Додатковий моніторинг (опціонально у Терміналі 4): Перевірка перехоплення шини
+
+```bash
+ros2 topic echo /cmd_vel
