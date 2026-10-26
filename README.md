@@ -377,10 +377,12 @@ source ~/ros2_ws/install/setup.bash
 ros2 run motion_playback_pkg record_node
 ```
 
-Термінал 4: Перевірка створеного CSV
+Перевірка створеного CSV
 
 ```bash
-cat ~/ros2_ws/scenario.csv
+cd ~/ros2_ws
+ls -l scenario.csv
+cat scenario.csv
 ```
 
 Згенерований сценарій у форматі CSV: колонка часу від старту, лінійна швидкість linear_x та кутова angular_z. 
@@ -399,3 +401,4 @@ ros2 run motion_playback_pkg playback_node
 
 ```bash
 ros2 topic echo /cmd_vel
+```
